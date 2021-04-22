@@ -1,6 +1,6 @@
 package models;
 
-// Approuvé par Laurine et Jules
+// Approuvé par Laurine et Jules et Thibou
 public enum State {
     Neutral {
         @Override
