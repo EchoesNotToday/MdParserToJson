@@ -47,17 +47,16 @@ public class MdToJson {
         }
         // Si n'existe pas => paragraphe : line = "Un nouveau paragraphe"
         else if(blockType == null) {
-            if(content.equals("")) {
-                currentBlock.setState(State.Neutral);
-            } else {
-                                currentBlock.setState(State.Pending);
-                if(oldBlock.getState() == State.Pending){
-                    json = json.substring(0, json.length() - 3);
-                    //ENLEVER LES DEUX DERNIERS CARACTERES
-                    json += "\n" + content + "\",\n";
-                } else {
-                    json += "\"p\":\"" + content + "\",\n";
-                }
+            // SI C'EST DANS LE MÊME PARAGRAPHE
+            if(oldBlock.getState() == State.Pending){
+//                System.out.println("---------------------------------------------------------");
+//                System.out.println(json);
+                json = json.substring(0, json.length() - 3);
+                json += "\",\\n" + content + ",\n";
+            }
+            // SI NOUVEAU PARAGRAPHE
+            else {
+                json += "\"p\":\"" + content + "\",\n";
             }
         }
         //Si blockType existe
@@ -65,7 +64,7 @@ public class MdToJson {
            currentBlock.setState(State.Pending);
            json += "\"" + blockType.name() + "\":\"" + content  + "\",\n";
 
-            //Si block est un Hx
+            //TODO Si block est différents Hx
 //           currentBlock->setParent();
         }
         oldBlock = currentBlock;

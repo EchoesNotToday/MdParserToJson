@@ -15,7 +15,6 @@ Voici un paragraphe
 
 Un nouveau paragraphe
 Toujours le même paragraphe
-Aspifion ça devient un aspifouette
 
 Et un nouveau paragraphe !
 
