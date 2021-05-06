@@ -2,7 +2,8 @@ package models;
 
 public class BlockFactory {
 
-    private BlockFactory(){}
+    private BlockFactory() {
+    }
 
     private static BlockFactory INSTANCE = null;
 
@@ -13,11 +14,11 @@ public class BlockFactory {
         return INSTANCE;
     }
 
-    public Block getBlock(BlockType blockType, String content, Block parent) {
-        return new ParagraphBlock(blockType, content, parent);
+    public Block getBlock(BlockType blockType, State state, String content, Block parent) {
+        return new ParagraphBlock(blockType, state, content, parent);
     }
 
-    public Block getBlock(BlockType blockType, String content) {
-        return new StandardBlock(blockType, content);
+    public Block getBlock(BlockType blockType, State state, String content) {
+        return new StandardBlock(blockType, state, content);
     }
 }

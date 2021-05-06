@@ -3,9 +3,11 @@ package models;
 public abstract class Block {
     private BlockType blockType;
     private String content;
+    private State state;
 
-    protected Block(BlockType blockType, String content) {
+    public Block(BlockType blockType, State state, String content) {
         this.blockType = blockType;
+        this.state = state;
         this.content = content;
     }
 
@@ -24,4 +26,14 @@ public abstract class Block {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+
 }

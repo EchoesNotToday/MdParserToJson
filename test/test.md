@@ -1,3 +1,12 @@
+# Coucou
+## Comment ça va ?
+
+
+bla bla bla
+
+### Je suis un h3
+
+
 # Titre du document
 
 Voici un paragraphe
@@ -9,7 +18,7 @@ Toujours le même paragraphe
 
 Et un nouveau paragraphe !
 
-```sh
+``` sh
 # Un bloc de code en shell
 echo "coucou les lapinous"
 ```
@@ -17,5 +26,4 @@ echo "coucou les lapinous"
 ### Un titre de niv 3
 
 * une liste
-* à
 * puce

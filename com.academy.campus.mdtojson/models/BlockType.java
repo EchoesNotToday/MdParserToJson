@@ -1,5 +1,8 @@
 package models;
 
+import java.util.regex.Pattern;
+
+// https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 public enum BlockType {
     H1("#"),
     H2("##"),
@@ -7,9 +10,10 @@ public enum BlockType {
     H4("####"),
     H5("#####"),
     H6("######"),
-    p(" "),
     UL("*"),
-    CodeBlock("```");
+    CodeBlock("```"),
+    ParagraphBlock(null),
+    ;
 
     private final String identifier;
 
@@ -19,5 +23,20 @@ public enum BlockType {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public static BlockType findByIdentifier(String identifier) {
+        System.out.println(String.format("Identifier dans BlockType = %s", identifier));
+        for (BlockType bt : values()) {
+            if (identifier != null && !identifier.isEmpty()) {
+                if (bt.getIdentifier() != null && bt.getIdentifier().equals(identifier)) {
+                    return bt;
+                }
+            }
+        }
+        if (identifier != null && !identifier.isEmpty()) {
+            return ParagraphBlock;
+        }
+        return null;
     }
 }
