@@ -15,7 +15,7 @@ public class MdToJson {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
-                ProcessLine(currentState, line);
+                currentState = ProcessLine(currentState, line);
             }
             json += "}";
         } catch (IOException fnfEx) {
@@ -68,7 +68,7 @@ public class MdToJson {
         oldBlock = currentBlock;
     }
 
-    private static void ProcessLine(State currentState, String line) {
+    private static State ProcessLine(State currentState, String line) {
         String code = line.split(" ")[0];
         BlockType blockType = BlockType.findByIdentifier(code);
         String content = "";
@@ -78,8 +78,9 @@ public class MdToJson {
             content = line;
         }
 
-        currentState = currentState.nextState(blockType, content, currentState);
+        currentState = currentState.nextState(blockType, content);
         System.out.println(String.format("CurrentState = %s", currentState.name()));
         System.out.println(String.format("Content = %s", line));
+        return currentState;
     }
 }

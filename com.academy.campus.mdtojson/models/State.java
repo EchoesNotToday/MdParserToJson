@@ -14,14 +14,14 @@ public enum State {
     Pending,
     Completed;
 
-    public State nextState(BlockType blockType, String content, State currentState) {
-        State state2return = currentState;
+    public State nextState(BlockType blockType, String content) {
+        State state2return = this;
         if (blockType == null) {
             state2return = State.Neutral;
         } else {
             switch (blockType) {
                 case H1:
-                    if (currentState != InCodeBlock) {
+                    if (this != InCodeBlock) {
                         state2return = InH1;
                     }
                     break;
@@ -41,16 +41,20 @@ public enum State {
                     state2return = InH6;
                     break;
                 case UL:
-                    state2return = InUL;
+                    if (this != InCodeBlock) {
+                        state2return = InUL;
+                    }
                     break;
                 case CodeBlock:
                     state2return = InCodeBlock;
-                    if (currentState == InCodeBlock) {
+                    if (this == InCodeBlock) {
                         state2return = Neutral;
                     }
                     break;
                 case ParagraphBlock:
-                    state2return = InParagraph;
+                    if (this != InCodeBlock) {
+                        state2return = InParagraph;
+                    }
                     break;
                 default:
                     state2return = Neutral;
