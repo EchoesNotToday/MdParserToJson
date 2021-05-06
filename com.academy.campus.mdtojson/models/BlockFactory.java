@@ -2,27 +2,27 @@ package models;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class BlockFactory {
 
     private BlockFactory() {
     }
 
-    private static BlockFactory INSTANCE = null;
+    private static BlockFactory instance = null;
 
     public static synchronized BlockFactory getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new BlockFactory();
+        if (instance == null) {
+            instance = new BlockFactory();
         }
-        return INSTANCE;
+        return instance;
     }
 
     public Block getBlock(BlockType blockType , String content) {
         return new StandardBlock(blockType, content);
     }
 
-    public Block getBlock(BlockType blockType, ArrayList<String> values) {
+    public Block getBlock(BlockType blockType, List<String> values) {
         Gson g = new Gson();
         String content = g.toJson(values);
         return new ListBlock(blockType, content);

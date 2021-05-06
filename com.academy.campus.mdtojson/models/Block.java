@@ -4,7 +4,7 @@ public abstract class Block {
     private BlockType blockType;
     private String content;
 
-    public Block(BlockType blockType, String content) {
+    protected Block(BlockType blockType, String content) {
         this.blockType = blockType;
         this.content = content;
     }

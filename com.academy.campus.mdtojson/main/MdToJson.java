@@ -2,11 +2,12 @@ package main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import models.*;
-import sun.util.logging.PlatformLogger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,7 @@ public class MdToJson {
         File file = new File(args[0]);
 
         // init sate à Neutral
-        State currentState = State.Neutral;
+        State currentState = State.NEUTRAL;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -42,7 +43,7 @@ public class MdToJson {
         String code = line.split(" ")[0];
         BlockType blockType = BlockType.findByIdentifier(code);
         String content = "";
-        if (blockType != null && blockType != BlockType.ParagraphBlock) {
+        if (blockType != null && blockType != BlockType.PARAGRAPH_BLOCK) {
             content = line.substring(code.length());
         } else {
             content = line;
@@ -59,17 +60,17 @@ public class MdToJson {
 
         // ajoute dans la liste un objet de type Block qui sera sérialisé en Json
         switch (currentState) {
-            case InH1:
-            case InH2:
-            case InH3:
-            case InH4:
-            case InH5:
-            case InH6:
+            case INH1:
+            case INH2:
+            case INH3:
+            case INH4:
+            case INH5:
+            case INH6:
                 map.add(BlockFactory.getInstance().getBlock(blockType, content));
                 break;
-            case InUL:
+            case IN_UL:
                 // si on eétait déjà dans une UL on ajoute à cette UL
-                if (oldState == State.InUL) {
+                if (oldState == State.IN_UL) {
                     ListBlock currentUl = (ListBlock) map.get(map.size() - 1);
                     map.remove(currentUl);
                     currentUl.addContent(content);
@@ -81,8 +82,8 @@ public class MdToJson {
                     map.add(BlockFactory.getInstance().getBlock(blockType, values));
                 }
                 break;
-            case InParagraph:
-            case InCodeBlock:
+            case IN_PARAGRAPH:
+            case IN_CODE_BLOCK:
                 // si on est dans un block de code on ajoute à ce block
                 if (oldState == currentState) {
                     Block currentBlock = map.get(map.size() - 1);
@@ -102,7 +103,7 @@ public class MdToJson {
                 }
                 break;
             default:
-            case Neutral:
+            case NEUTRAL:
                 break;
         }
         return currentState;
