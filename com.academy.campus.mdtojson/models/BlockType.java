@@ -26,7 +26,7 @@ public enum BlockType {
     }
 
     public static BlockType findByIdentifier(String identifier) {
-        System.out.println(String.format("Identifier dans BlockType = %s", identifier));
+       // System.out.println(String.format("Identifier dans BlockType = %s", identifier));
         for (BlockType bt : values()) {
             if (identifier != null && !identifier.isEmpty()) {
                 if (bt.getIdentifier() != null && bt.getIdentifier().equals(identifier)) {
@@ -35,6 +35,9 @@ public enum BlockType {
             }
         }
         if (identifier != null && !identifier.isEmpty()) {
+            if (identifier.contains(CodeBlock.getIdentifier())){
+                return CodeBlock;
+            }
             return ParagraphBlock;
         }
         return null;

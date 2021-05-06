@@ -18,7 +18,7 @@ Toujours le même paragraphe
 
 Et un nouveau paragraphe !
 
-``` sh
+```sh
 # Un bloc de code en shell
 echo "coucou les lapinous"
 ```
@@ -26,4 +26,5 @@ echo "coucou les lapinous"
 ### Un titre de niv 3
 
 * une liste
+* à
 * puce

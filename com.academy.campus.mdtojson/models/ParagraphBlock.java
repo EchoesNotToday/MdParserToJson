@@ -3,8 +3,8 @@ package models;
 public class ParagraphBlock extends Block {
     Block parent;
 
-    protected ParagraphBlock(BlockType blockType, State state, String content, Block parent) {
-        super(blockType, state, content);
+    protected ParagraphBlock(BlockType blockType, String content, Block parent) {
+        super(blockType, content);
         this.parent = parent;
     }
 
