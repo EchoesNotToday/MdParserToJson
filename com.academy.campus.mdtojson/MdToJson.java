@@ -9,13 +9,15 @@ import java.util.LinkedHashMap;
 public class MdToJson {
 
     private static String json;
-    private static Block oldBlock;
-    private static boolean firstUl = true;
     private static ArrayList<Block> map = new ArrayList<>();
+    public static Gson g = new Gson();
+    public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static void main(String[] args) {
         System.out.println("Conversion du fichier : " + args[0]);
         File file = new File(args[0]);
+
+        // init sate à Neutral
         State currentState = State.Neutral;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -24,7 +26,6 @@ public class MdToJson {
                 currentState = ProcessLine(currentState, line);
             }
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             json = gson.toJson(map);
         } catch (IOException fnfEx) {
             fnfEx.printStackTrace();
@@ -32,49 +33,6 @@ public class MdToJson {
         System.out.println(json);
     }
 
-    private static void ProcessLine(String line) {
-        String code = line.split(" ")[0];
-        BlockType blockType = BlockType.findByIdentifier(code);
-        String content = "";
-        if (blockType != null) {
-            content = line.substring(code.length());
-        } else {
-            content = line;
-        }
-
-        Block currentBlock = BlockFactory.getInstance().getBlock(blockType, content);
-        // Ligne vide
-        if (line.equals("")) {
-            //currentBlock.setState(State.Neutral);
-        }
-        // Fin d'une balise (exemple de nouveau ''')
-        else if (currentBlock instanceof ParagraphBlock && ((ParagraphBlock) currentBlock).getParent() != null && ((ParagraphBlock) currentBlock).getParent().getBlockType() == blockType) {
-            //currentBlock.setState(State.Completed);
-        }
-        // Si n'existe pas => paragraphe : line = "Un nouveau paragraphe"
-        else if (blockType == null) {
-            // SI C'EST DANS LE MÊME PARAGRAPHE
-            if (null == State.Pending) {
-//                System.out.println("---------------------------------------------------------");
-//                System.out.println(json);
-                json = json.substring(0, json.length() - 3);
-                json += "\",\\n" + content + ",\n";
-            }
-            // SI NOUVEAU PARAGRAPHE
-            else {
-                json += "\"p\":\"" + content + "\",\n";
-            }
-        }
-        //Si blockType existe
-        else {
-            //currentBlock.setState(State.Pending);
-            json += "\"" + blockType.name() + "\":\"" + content + "\",\n";
-
-            //TODO Si block est différents Hx
-//           currentBlock->setParent();
-        }
-        oldBlock = currentBlock;
-    }
 
     private static State ProcessLine(State currentState, String line) {
         String code = line.split(" ")[0];
@@ -86,12 +44,16 @@ public class MdToJson {
             content = line;
         }
 
+        // efface les espaces du content
         content = content.trim();
-        State oldState = currentState;
-        currentState = currentState.nextState(blockType, content);
-        //System.out.println(String.format("CurrentState = %s", currentState.name()));
-        //System.out.println(String.format("Content = %s", line));
 
+        // garde le dernier état
+        State oldState = currentState;
+
+        // obtient le nouvel état selon le type de block qui a été trouvé
+        currentState = currentState.nextState(blockType, content);
+
+        // ajoute dans la liste un objet de type Block qui sera sérialisé en Json
         switch (currentState) {
             case InH1:
             case InH2:
@@ -102,12 +64,14 @@ public class MdToJson {
                 map.add(BlockFactory.getInstance().getBlock(blockType, content));
                 break;
             case InUL:
+                // si on eétait déjà dans une UL on ajoute à cette UL
                 if (oldState == State.InUL) {
                     ListBlock currentUl = (ListBlock) map.get(map.size() - 1);
                     map.remove(currentUl);
                     currentUl.addContent(content);
                     map.add(currentUl);
                 } else {
+                    // sinon on crée la liste
                     ArrayList<String> values = new ArrayList<>();
                     values.add(content);
                     map.add(BlockFactory.getInstance().getBlock(blockType, values));
@@ -115,10 +79,13 @@ public class MdToJson {
                 break;
             case InParagraph:
             case InCodeBlock:
+                // si on est dans un block de code on ajoute à ce block
                 if (oldState == currentState) {
                     Block currentBlock = map.get(map.size() - 1);
                     map.remove(currentBlock);
                     String newContent;
+
+                    // évite d'avoir un \n en début de ligne à cause des ```
                     if (currentBlock.getContent().isEmpty()) {
                         newContent = String.format("%s", content);
                     }else {

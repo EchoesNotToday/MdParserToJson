@@ -18,10 +18,6 @@ public class BlockFactory {
         return INSTANCE;
     }
 
-    public Block getBlock(BlockType blockType, String content, Block parent) {
-        return new ParagraphBlock(blockType,  content, parent);
-    }
-
     public Block getBlock(BlockType blockType , String content) {
         return new StandardBlock(blockType, content);
     }
