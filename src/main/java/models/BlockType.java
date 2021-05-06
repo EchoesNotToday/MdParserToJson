@@ -4,13 +4,13 @@ import java.util.regex.Pattern;
 
 // https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 public enum BlockType {
-    H1("#"),
-    H2("##"),
-    H3("###"),
-    H4("####"),
-    H5("#####"),
-    H6("######"),
-    UL("*"),
+    h1("#"),
+    h2("##"),
+    h3("###"),
+    h4("####"),
+    h5("#####"),
+    h6("######"),
+    ul("*"),
     CodeBlock("```");
 
     private final String identifier;

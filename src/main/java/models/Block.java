@@ -4,10 +4,12 @@ public class Block {
     private BlockType blockType;
     private State state;
     private Block parent;
+    private String content;
 
-    public Block(BlockType blockType, State state) {
+    public Block(BlockType blockType, State state, String content) {
         this.blockType = blockType;
         this.state = state;
+        this.content = content;
     }
 
     public BlockType getBlockType() {
@@ -32,5 +34,13 @@ public class Block {
 
     public void setParent(Block parent) {
         this.parent = parent;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
