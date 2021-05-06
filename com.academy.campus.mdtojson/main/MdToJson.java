@@ -1,20 +1,24 @@
+package main;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import models.*;
+import sun.util.logging.PlatformLogger;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MdToJson {
 
     private static String json;
     private static ArrayList<Block> map = new ArrayList<>();
-    public static Gson g = new Gson();
-    public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static Logger logger = Logger.getLogger(MdToJson.class.getName());
 
     public static void main(String[] args) {
-        System.out.println("Conversion du fichier : " + args[0]);
         File file = new File(args[0]);
 
         // init sate à Neutral
@@ -23,18 +27,18 @@ public class MdToJson {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
-                currentState = ProcessLine(currentState, line);
+                currentState = processLine(currentState, line);
             }
 
             json = gson.toJson(map);
         } catch (IOException fnfEx) {
             fnfEx.printStackTrace();
         }
-        System.out.println(json);
+        logger.log(Level.INFO, json);
     }
 
 
-    private static State ProcessLine(State currentState, String line) {
+    private static State processLine(State currentState, String line) {
         String code = line.split(" ")[0];
         BlockType blockType = BlockType.findByIdentifier(code);
         String content = "";
@@ -88,8 +92,8 @@ public class MdToJson {
                     // évite d'avoir un \n en début de ligne à cause des ```
                     if (currentBlock.getContent().isEmpty()) {
                         newContent = String.format("%s", content);
-                    }else {
-                        newContent = String.format("%s\n%s", currentBlock.getContent(), content);
+                    } else {
+                        newContent = String.format("%s%n%s", currentBlock.getContent(), content);
                     }
                     currentBlock.setContent(newContent);
                     map.add(currentBlock);
@@ -97,6 +101,7 @@ public class MdToJson {
                     map.add(BlockFactory.getInstance().getBlock(blockType, content));
                 }
                 break;
+            default:
             case Neutral:
                 break;
         }
