@@ -20,6 +20,8 @@ public enum State {
             switch (blockType) {
                 case H1:
                     if (this != IN_CODE_BLOCK) {
+
+
                         state2return = INH1;
                     }
                     break;
